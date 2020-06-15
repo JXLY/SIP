@@ -1,5 +1,28 @@
 
-# SIP (smart image processing) 
+# 1. Preprocessing
+
+SIP supports the preprocessing of raw data to extract enhanced images and features as input to the classification algorithms. Parameters are illustrated using landsat8 as an example.  
+
+```
+landsat8_params:
+    landsat8_zip_dir: /home/l44xu/SIP2/data/landsat8_raw_zip
+    raw_landsat8_format: tar.gz
+    to_unzip: False
+    multilook_num: 1
+    low_percentage_to_remove: 0.02
+    high_percentage_to_remove: 0.02
+    output_raw_img_dir: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/
+```
+
+**1.1 Unzip the raw data.** If ***to_unzip*** is True, the raw data files with extension ***raw_landsat8_format*** in folder ***landsat8_zip_dir*** will be extracted into separate folders. 
+
+**1.2 Multilooking to reduce size.** To reduce image size, a image patch of size ***multilook_num*** by ***multilook_num*** will be averaged into a single pixel in the preprocessed images. 
+
+**1.3 Remove extrame pixels.** To increase image contrast for better visualization, low intensity pixels of percentage ***low_percentage_to_remove*** will be set to the value 0, and high intensity pixels of percentage ***high_percentage_to_remove*** will be set to the value 255. After this, the dynamic range of image will be extended. 
+
+**1.4 Save preprocessed images.** The preprocessed images will be saved into folder ***output_raw_img_dir***.
+ 
+
 
 Intelligent pixel-level image classification using deep neural networks.
 
