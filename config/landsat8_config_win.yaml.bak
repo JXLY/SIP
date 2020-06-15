@@ -4,25 +4,26 @@
 ########################################################################
 
 landsat8_params:
-    landsat8_zip_dir: C:\Users\ali\SIP\data\landsat8_raw_zip
-    to_unzip: True
-    multilook_num: 4
+    landsat8_zip_dir: C:\Users\l44xu\SIP2\data\landsat8_raw_zip
+    raw_landsat8_format: tar.gz
+    to_unzip: False
+    multilook_num: 1
     low_percentage_to_remove: 0.02
     high_percentage_to_remove: 0.02
-    output_raw_img_dir: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs
+    output_raw_img_dir: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\
 
 
 ########################################################################
-# Raw data parameters
+# Image data parameters
 ########################################################################
 raw_data_params:
-    raw_img_dir: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs
+    raw_img_dir: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs
     raw_img_type: tiff
     raw_id_str_range: #from 'start' to 'end' in the name of the raw image are the string that differenciate different scenes
         start: 10
         end: 34
     raw_band_names: # each raw scene contrain the following bands, each of which is a seperate image in 'raw_img_type' format
-        - B1 
+        - B1
         - B2
         - B3
         - B4
@@ -40,9 +41,9 @@ raw_data_params:
 
 dirs:
     image_type: npz
-    mask_type: npz
+    mask_type: png
 
-    # A (images, mask) pair is identified by looking for the same file name in the 'data' subfolder and 'mask' subfolder
+    # A (image, mask) pair is identified by looking for the same file name in the 'data' subfolder and 'mask' subfolder
     # E.g., 'hsi1.npz' in \data\train\ is associated with 'hsi1.npz' in \mask\train\ folder
     # ----------------------------------------------------------------
     # (1) config image directories
@@ -50,16 +51,16 @@ dirs:
     data: 
     
         # (1.1) training_data_dir contains images with GT in training_mask_dir for training
-        train: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\data\train
+        train: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\data\train
         
         # (1.2) val_data_dir contains images with GT in val_data_dir for validation
-        val: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\data\val
+        val: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\data\val
         
         # (1.3) test_data_dir contains images with GT in test_mask_dir for test to acquire training accuracies
-        test: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\data\test
+        test: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\data\test
         
         # (1.4) predict_data_dir contains images that do not have GT for prediction to acquire classification maps
-        predict: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\data\predict
+        predict: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\data\predict
         
     #-----------------------------------------------------------------
     # (2) config GT directories
@@ -67,16 +68,16 @@ dirs:
     mask:   
      
         # (2.1) training_mask_dir contrains one-to-one matching masks with images in training_data_dir
-        train: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\mask\train
+        train: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\mask\train
         
         # (2.2) val_mask_dir contains one-to-one matching masks with images in val_data_dir
-        val: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\mask\val
+        val: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\mask\val
         
         # (2.3) test_mask_dir contains one-to-one matching masks with images in test_data_dir
-        test: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\mask\test
+        test: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\mask\test
 
         # (2.4) predict_mask_dir contains the background pixel masks for some images in predict_data_dir
-        predict: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\mask\predict
+        predict: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\mask\predict
         
     #------------------------------------------------------------------
     # (3) config results directories
@@ -84,19 +85,19 @@ dirs:
     save:
         
         # (3.1) specify directory to save model i.e. best model log file
-        model: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\model
+        model: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\model
         
         # (3.2) specify directory to save training results i.e. maps accuracies
-        train: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\train
+        train: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\train
         
         # (3.3) specify directory to save val results i.e. maps accuracies
-        val: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\val
+        val: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\val
         
         # (3.4) specify directory to save test results i.e. maps accuracies
-        test: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\test
+        test: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\test
         
         # (3.5) specify directory to save predict results i.e. maps
-        predict: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\predict
+        predict: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\predict
         
 
 ######################################################################
@@ -113,15 +114,15 @@ classification_map_params:
     
     class_color_config_params:
         my_colors:
-            - white #14
-            - indigo #1
-            - yellow #13
+            - white # color of the background, e.g., land area in sea ice classification
+            - yellow # color of the first class
+            - indigo # color of the second class
         my_classes: # the class names you defined here have to be consistent with the class names appeared in GUI
                     # e.g., in GUI, if you have land_train, land_val, land_test, water_train, water_val, water_test, 
                     # then, here you need to have two classes, i.e., land and water. 
-            - Unknown #0 
-            - water #1
-            - land #2
+            - background # 0, background mask has to end with 'background_mask.xxx' 
+            - burn # 1, the first class name
+            - unburn # 2, the second class name
 
     #define the indicator of the background class whose class identity is unknown
     #the color of the background class is defined as the first color in 'my_colors'
@@ -130,12 +131,13 @@ classification_map_params:
 
 data_params: 
 
+
     img_data_params: #image input to FCN models
         split_size: 145
         overlap: 5
 
     patch_data_params: #patch input to CNN models with fully connected layers
-        patch_size: 9  # **
+        patch_size: 1  # **
 
         save_extracted_patches: False #whether the extracted patch samples will be saved
 
@@ -151,22 +153,23 @@ data_params:
         predict_patches_block_size_c: 1000
         
 train_params: 
-    lr: 0.0001  # **
-    epoch: 200  # **
+    lr: 0.0001
+    epoch: 50  
     batch_size_train: 2000 # batch_size when doing training
     batch_size_val: 20000 # batch_size when doing val and test
     val_inter: 1 # if 1, then validation and test are used in each epoch 
-    to_test: True # is True, both validation and test data will be used to evaluate training
+    to_test: False # is True, both validation and test data will be used to evaluate training
     prop_test: 1 # if 0.1, then 10% of all test samples are used in each epoch
+    prop_train: 0.0001 # if 0.1, then 10% of all train samples are used in each epoch
     var: 0.05 # std of noise added to input when using images as input 
-    net_type: ss_res
+    net_type: knn
  
     train_mask_save_options:
-        save_train_mask: True
+        save_train_mask: False
         img_format: png
     
     input_img_save_options:
-        save_input_img: True # if True, original images will be saved
+        save_input_img: False # if True, original images will be saved
         img_format: png
         is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
         rgb_bands: 0_0_0 # specify r, g, and b channels
@@ -177,22 +180,24 @@ train_params:
         save_classification_map: True
         img_format: png
         copy_map_to_raw_data_dir: True
+        save_map_over_epoch: True
+        use_background_pixels: True
 
 
 train_result_params:
-    train_log_file: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_epoch200_lr0.0001_time20200418170713_train.log
-    model_file: ss_res_batchSize2000_bestEpoch198_lr0.0001_time20200418171144_weights.pkl
-    train_config_file: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_bestEpoch198_lr0.0001_time20200418171144__time20200418171144_train_config.yaml
+    train_log_file: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_epoch50_lr0.0001_time20200613223826_train.log
+    model_file: ss_res_batchSize2000_bestEpoch50_lr0.0001_time20200613225304_weights.pkl
+    train_config_file: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_bestEpoch50_lr0.0001_time20200613225304__time20200613225305_train_config.yaml
 
 test_params:
     batch_size: 20000 # batch size for test
     
     test_mask_save_options:
-        save_test_mask: True
+        save_test_mask: False
         img_format: png
         
     input_img_save_options:
-        save_input_img: True # if True, original images will be saved
+        save_input_img: False # if True, original images will be saved
         img_format: png
         is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
         rgb_bands: 0_0_0 # specify r, g, and b channels
@@ -202,11 +207,11 @@ test_params:
         save_classification_map: True
         img_format: png
         copy_map_to_raw_data_dir: True
-
+        use_background_pixels: False
 
 test_result_params:
-    test_log_file: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_epoch200_lr0.0001_time20200418170713_time20200418171406_test.log
-    test_config_file: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_bestEpoch198_lr0.0001_time20200418171144_time20200418171406_test_config.yaml
+    test_log_file: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_epoch200_lr0.0001_time20200418170713_time20200418171406_test.log
+    test_config_file: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_bestEpoch198_lr0.0001_time20200418171144_time20200418171406_test_config.yaml
     
 
 predict_params:
@@ -214,7 +219,7 @@ predict_params:
     batch_size: 20000 # batch size for predict
     
     input_img_save_options:
-        save_input_img: True # if True, original images will be saved
+        save_input_img: False # if True, original images will be saved
         img_format: png
         is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
         rgb_bands: 0_0_0 # specify r, g, and b channels
@@ -226,11 +231,11 @@ predict_params:
         save_classification_map: True
         img_format: png
         copy_map_to_raw_data_dir: True
-
+        use_background_pixels: True
 
 predict_result_params:
-    predict_log_file: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_epoch200_lr0.0001_time20200418170713_time20200418171637_predict.log
-    predict_config_file: C:\Users\ali\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_bestEpoch198_lr0.0001_time20200418171144_time20200418171637_predict_config.yaml
+    predict_log_file: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\svm_batchSize2000_epoch50_lr0.0001_time20200613003824_time20200613141535_predict.log
+    predict_config_file: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\svm_time20200613020453_time20200613141535_predict_config.yaml
 
  
 
@@ -242,12 +247,11 @@ predict_result_params:
 net_params:
     
     ss_res: 
-        channels: 4
+        channels: 20
         blocks: 3
         is_bn: True
         is_dropout: False
         p: -0.2
-    
     
     ss_cnn: 
         feature_nums:
@@ -257,46 +261,82 @@ net_params:
         is_dropout: False
         p: -0.2
 
+    knn:
+        innate: 
+            n_jobs: -1
+        grid_search:
+            k_range:
+                start: 1
+                end: 30
+            weight_options:
+                - uniform
+                - distance
+
+    rf: 
+        innate: 
+            n_jobs: -1
+            oob_score: True
+            class_weight: balanced
+        grid_search:
+            n_estimators:
+                - 10
+                - 30
+                - 50
+                - 70
+                - 100
+                - 120
+                - 150
+            max_features:
+                - auto
+                - sqrt
+                - log2
+            #min_sample_split:
+            #    - 2
+            #    - 4
+            #    - 6
+            #min_sample_leaf:
+
     svm:
         innate:
             class_weight: balanced
             probability: True
         grid_search:
-            - kernel:
+            kernel:
                 - rbf
-                - gamma:
-                    - 0.1
-                    - 0.01
-                    - 0.001
-                - C:
-                    - 1
-                    - 10
-                    - 100
-                    - 1000 
-            - kernel:
                 - linear
-                - C:
-                    - 0.1
-                    - 1
-                    - 10
-                    - 100
-                    - 1000
-            - kernel:
-                - poly
-                - degree: 3
-                - gamma:
-                    - 0.1
-                    - 0.01
-                    - 0.001
+            C:
+                - 0.01
+                - 0.1
+                - 1 
+                - 10
+                - 100
+            gamma:
+                - 1
+                - 0.1
+                - 0.01
+                - 0.001
+            decision_function_shape: 
+                - ovr
+                - ovo
         crf:
             crf: unknown
-            
+
+    dip_res: 
+        channels: 4
+        blocks: 5
+        act_fun: LeakyReLU  # LeakyRELU ReLU ...
+        pad: reflection  # reflection zero ...
+    
+    
 
 dip_model_list:
-    - unknown
+    - dip_res
 
 patch_model_list:
     - ss_res
     - ss_cnn
 
-
+classic_ml_model_list:
+    - svm
+    - rf
+    - knn

@@ -4,12 +4,12 @@
 ########################################################################
 
 landsat8_params:
-    landsat8_zip_dir: /home/l44xu/SIP/data/landsat8_raw_zip
+    landsat8_zip_dir: /home/l44xu/SIP2/data/landsat8_raw_zip
     raw_landsat8_format: tar.gz
-    to_unzip: True
-    multilook_num: 4
-    low_percentage_to_remove: 0.0
-    high_percentage_to_remove: 0.0
+    to_unzip: False
+    multilook_num: 1
+    low_percentage_to_remove: 0.02
+    high_percentage_to_remove: 0.02
     output_raw_img_dir: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/
 
 
@@ -110,23 +110,19 @@ use_cuda: True
 
 classification_map_params:
 
-    num_classes: 4
+    num_classes: 2
     
     class_color_config_params:
         my_colors:
-            - white #14
-            - red #1
-            - yellow #13
-            - indigo
-            - green
+            - white # color of the background, e.g., land area in sea ice classification
+            - yellow # color of the first class
+            - indigo # color of the second class
         my_classes: # the class names you defined here have to be consistent with the class names appeared in GUI
                     # e.g., in GUI, if you have land_train, land_val, land_test, water_train, water_val, water_test, 
                     # then, here you need to have two classes, i.e., land and water. 
-            - Unknown #0 
-            - heavy #1
-            - medium #2
-            - low
-            - nofire
+            - background # 0, background mask has to end with 'background_mask.xxx' 
+            - burn # 1, the first class name
+            - unburn # 2, the second class name
 
     #define the indicator of the background class whose class identity is unknown
     #the color of the background class is defined as the first color in 'my_colors'
@@ -141,7 +137,7 @@ data_params:
         overlap: 5
 
     patch_data_params: #patch input to CNN models with fully connected layers
-        patch_size: 5  # **
+        patch_size: 1  # **
 
         save_extracted_patches: False #whether the extracted patch samples will be saved
 
@@ -157,22 +153,23 @@ data_params:
         predict_patches_block_size_c: 1000
         
 train_params: 
-    lr: 0.0001  # **
-    epoch: 2000  # **
+    lr: 0.0001
+    epoch: 50  
     batch_size_train: 2000 # batch_size when doing training
     batch_size_val: 20000 # batch_size when doing val and test
     val_inter: 1 # if 1, then validation and test are used in each epoch 
     to_test: False # is True, both validation and test data will be used to evaluate training
     prop_test: 1 # if 0.1, then 10% of all test samples are used in each epoch
+    prop_train: 0.0001 # if 0.1, then 10% of all train samples are used in each epoch
     var: 0.05 # std of noise added to input when using images as input 
-    net_type: ss_res
+    net_type: knn
  
     train_mask_save_options:
-        save_train_mask: True
+        save_train_mask: False
         img_format: png
     
     input_img_save_options:
-        save_input_img: True # if True, original images will be saved
+        save_input_img: False # if True, original images will be saved
         img_format: png
         is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
         rgb_bands: 0_0_0 # specify r, g, and b channels
@@ -183,22 +180,24 @@ train_params:
         save_classification_map: True
         img_format: png
         copy_map_to_raw_data_dir: True
+        save_map_over_epoch: True
+        use_background_pixels: True
 
 
 train_result_params:
-    train_log_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_epoch2000_lr0.0001_time20200610185303_train.log
-    model_file: ss_res_batchSize2000_bestEpoch491_lr0.0001_time20200610191047_weights.pkl
-    train_config_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_bestEpoch491_lr0.0001_time20200610191047__time20200610191047_train_config.yaml
+    train_log_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_epoch50_lr0.0001_time20200613223826_train.log
+    model_file: ss_res_batchSize2000_bestEpoch50_lr0.0001_time20200613225304_weights.pkl
+    train_config_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_bestEpoch50_lr0.0001_time20200613225304__time20200613225305_train_config.yaml
 
 test_params:
     batch_size: 20000 # batch size for test
     
     test_mask_save_options:
-        save_test_mask: True
+        save_test_mask: False
         img_format: png
         
     input_img_save_options:
-        save_input_img: True # if True, original images will be saved
+        save_input_img: False # if True, original images will be saved
         img_format: png
         is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
         rgb_bands: 0_0_0 # specify r, g, and b channels
@@ -208,7 +207,7 @@ test_params:
         save_classification_map: True
         img_format: png
         copy_map_to_raw_data_dir: True
-
+        use_background_pixels: False
 
 test_result_params:
     test_log_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_epoch200_lr0.0001_time20200418170713_time20200418171406_test.log
@@ -220,7 +219,7 @@ predict_params:
     batch_size: 20000 # batch size for predict
     
     input_img_save_options:
-        save_input_img: True # if True, original images will be saved
+        save_input_img: False # if True, original images will be saved
         img_format: png
         is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
         rgb_bands: 0_0_0 # specify r, g, and b channels
@@ -232,11 +231,11 @@ predict_params:
         save_classification_map: True
         img_format: png
         copy_map_to_raw_data_dir: True
-
+        use_background_pixels: True
 
 predict_result_params:
-    predict_log_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_epoch2000_lr0.0001_time20200610185303_time20200610204834_predict.log
-    predict_config_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_bestEpoch491_lr0.0001_time20200610191047_time20200610204834_predict_config.yaml
+    predict_log_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/svm_batchSize2000_epoch50_lr0.0001_time20200613003824_time20200613141535_predict.log
+    predict_config_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/svm_time20200613020453_time20200613141535_predict_config.yaml
 
  
 
@@ -254,7 +253,6 @@ net_params:
         is_dropout: False
         p: -0.2
     
-    
     ss_cnn: 
         feature_nums:
             - 16
@@ -262,6 +260,41 @@ net_params:
         is_bn: True
         is_dropout: False
         p: -0.2
+
+    knn:
+        innate: 
+            n_jobs: -1
+        grid_search:
+            k_range:
+                start: 1
+                end: 30
+            weight_options:
+                - uniform
+                - distance
+
+    rf: 
+        innate: 
+            n_jobs: -1
+            oob_score: True
+            class_weight: balanced
+        grid_search:
+            n_estimators:
+                - 10
+                - 30
+                - 50
+                - 70
+                - 100
+                - 120
+                - 150
+            max_features:
+                - auto
+                - sqrt
+                - log2
+            #min_sample_split:
+            #    - 2
+            #    - 4
+            #    - 6
+            #min_sample_leaf:
 
     svm:
         innate:
@@ -288,41 +321,6 @@ net_params:
         crf:
             crf: unknown
 
-
-    svm2:
-        innate:
-            class_weight: balanced
-            probability: True
-        grid_search:
-            - kernel:
-                - rbf
-                - gamma:
-                    - 0.1
-                    - 0.01
-                    - 0.001
-                - C:
-                    - 1
-                    - 10
-                    - 100
-                    - 1000 
-            - kernel:
-                - linear
-                - C:
-                    - 0.1
-                    - 1
-                    - 10
-                    - 100
-                    - 1000
-            - kernel:
-                - poly
-                - degree: 3
-                - gamma:
-                    - 0.1
-                    - 0.01
-                    - 0.001
-        crf:
-            crf: unknown
-            
     dip_res: 
         channels: 4
         blocks: 5
@@ -338,4 +336,7 @@ patch_model_list:
     - ss_res
     - ss_cnn
 
-
+classic_ml_model_list:
+    - svm
+    - rf
+    - knn
