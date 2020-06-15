@@ -25,6 +25,16 @@ Intelligent pixel-level image classification using deep neural networks.
 
 * **Strong preprocessing functionalities** to support open source or commercial images, e.g., **Drone hyperspectral/multispectral image**, Sentinel-1/2/3, RADARSAT-1/2, **RADARSAT Constellation Mission (RCM)**, Landsat, MODIS, Drone images, and other **biomedical and industrial images**;
 
+# Documentation
+* [Config file] (docs/config_file.md)
+* [Burned area detection from Landsat8 Images] (docs/ba_landsat8.md)
+<!---* [Getting started](docs/get-started.md)--->
+<!---* [Introduction](intro.md)--->
+<!---* [Parameters](parameters.md)--->
+<!---* [How To](how-to.md)--->
+<!---* [FAQ](faq.md)--->
+<!---* [Related Websites](related-website.md)--->
+
 
 ## Installation guide:
 
