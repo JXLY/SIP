@@ -146,7 +146,7 @@ classification_map_params:
         my_classes: # the class names you defined here have to be consistent with the class names appeared in GUI
                     # e.g., in GUI, if you have land_train, land_val, land_test, water_train, water_val, water_test, 
                     # then, here you need to have two classes, i.e., land and water. 
-            - background # 0, background mask has to end with 'background_mask.xxx' 
+            - background # 0, background mask has to end with 'background_mask.xxx'. In the background mask file, masked areas have value 255, unmasked areas have value 0.   
             - burn # 1, the first class name
             - unburn # 2, the second class name
 

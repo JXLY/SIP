@@ -31,6 +31,7 @@ Intelligent pixel-level image classification using deep neural networks.
 * [Image preprocessing](docs/sentinel1_preprocessing.md)
 * [Burned area detection from Landsat8 Images](docs/ba_landsat8.md)
 * [Config file](docs/config_file.md)
+* [FAQ](docs/qa.md)
 <!---* [Getting started](docs/get-started.md)--->
 <!---* [Introduction](intro.md)--->
 <!---* [Parameters](parameters.md)--->
