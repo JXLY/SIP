@@ -1,4 +1,5 @@
 # Wildfire burned and unburned area classification from Landsat-8 images
+## Classification using ss_res classifier
 
 **Step 1: Download Landsat-8 wildfire images**
 - Go to USGS EarthExplorer (https://earthexplorer.usgs.gov/);
@@ -40,6 +41,7 @@
 **Step 7: Edit config file.** 
 - Open the ***"landsat8_config_os.yaml"*** config file in the 'config' folder;
 - **Make sure you have changed all dirs to your own directories**. See [config file](config_file.md) for instructions. 
+- Make sure your set ***net_type: ss_res***
 
 **Step 8: Prepare label mask.** 
 - Click on ***"prepare label mask"*** under ***classification*** menu;
@@ -62,5 +64,23 @@
 - Click on ***"Predict image"*** to run the trained model on the other scene in the folder.
 - Once it is done, you can also check the label map in the "Image List" panel, and also in the ***/all_data/save/predict/*** folder. You also need to select the same .yaml config file.
 - Check the "predict_log" file under the "save_model" folder specified in the .yaml config file. 
+
+## Compare different classifiers
+
+**Step 1: select random forest 'rf' in the config file**
+- Open the ***"landsat8_config_os.yaml"*** config file in the 'config' folder
+- Make sure you set ***net_type: svm***
+- Make sure you set ***patch_size: 1*** to use only single pixels
+- Random forest training is slow, you can use a small proportion of the training samples by set ***prop_train*** to a small number, e.g., 0.0001, depending on how many pixels in you ROIs. 
+ 
+
+**Step 2: prepare data, train rf and predict**
+- Go to step 9 in the above to start from there; 
+- Once all steps are finised, please compare the four classification maps (two train, two predict) achieved by ***rf*** with the four maps achieved by ***ss_res***;
+
+**Step 3: do the same for svm and knn classifiers**
+- go over step 1 and step 2, but replace rf with svm and knn;
+- compare the classification maps, train accuracy and val accuracy of all four methods (i.e., ss_res, knn, rf, svm);
+
 
 
