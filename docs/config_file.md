@@ -1,5 +1,5 @@
 
-# 1. Preprocessing
+# 1. Preprocessing raw data of different sensors
 
 SIP supports the preprocessing of raw data to extract enhanced images and features as input to the classification algorithms. Parameters are illustrated using landsat8 as an example.  
 
@@ -24,7 +24,7 @@ landsat8_params:
  
 # 2. Preparing data 
 
-SIP automatically prepares data for classification. No manual operatoins are needed. 
+SIP automatically prepares the data for classification. No manual operatoins are needed. 
 
 ```
 raw_data_params:
@@ -48,7 +48,7 @@ raw_data_params:
 
 # 3. Copy the prepared data to different folders
 
-SIP copies data to separate folders for different stages, i.e., ***train***, ***validation***, ***test*** and ***prediction*** stages. 
+SIP automatically generates folders and copies data to separate folders for different data processing stages, i.e., ***train***, ***validation***, ***test*** and ***prediction*** stages. 
 
 * **train** folders contain ***data***, ***mask*** and ***result*** for training the classifier.
 
@@ -155,8 +155,106 @@ classification_map_params:
     background_class_indicator: 0
 ```
 
+**4.1 Each class has a color.** The length of ***my_colors*** should be equal to the length of ***my_classes***, which are equals to ***num_classes*** + 1, because the presence of the ***background*** class.  
+
+**4.2 Background class.** The ***background*** class consists of the pixels that are not relevant, and usually are not used in the classification. For example, the land pixels in ocean classification. Land masks are needed to mask out the land area, which is defined here as the background class. 
+
+**4.3 Class names should be exactly the same with SIP GUI**. For example, if under ***my_classes***, there are two classes, i.e., 'aaa' and 'bbb'. Then, in SIP GUI, when you draw ground truth, you have to define 'aaa_train', 'bbb_train', or optionally, 'aaa_val', 'bbb_val' for validation, and 'aaa_test', 'bbb_test' for testing. 
 
 
+# 5. Generate samples for training classifiers
+
+There are two types of samples, i.e., patch samples and image samples. 
+
+* **patch samples** are ***small image patches***, e.g., 5-by-5, or 11-by-11 small images, which are used as input to determine the class label of the center pixels in image patchs. The use of an image patch centered at the referenced pixel rather than a single pixel enables the utilization of local spatial information when determining the label of the referenced pixel. Patch samples are usually used in classic convolutional neural network (CNN) models whose input is an image patch and output is the class memebership of the centered pixel. 
+
+* **image samples** are ***big sub-images***, e.g., 512-by-512, which are used as input to determine the class label of all pixels in the sub-image. Image samples are usually used in fully convolutional neural network (FCN) whose input is a sub-image and output is a label map involving the labels of all pixels in the sub-image. 
+
+```
+data_params: 
+
+
+    img_data_params: #image input to FCN models
+        split_size: 145
+        overlap: 5
+
+    patch_data_params: #patch input to CNN models with fully connected layers
+        patch_size: 1  # **
+
+        save_extracted_patches: False #whether the extracted patch samples will be saved
+
+        is_dataset_cuda: False # 'True' means all patches deployed on cuda; 'False' means cuda will be used batch-wise; 
+        extract_patch_cuda: False # 'True' means performing F.unfold() on cuda()
+
+        to_extract_patches_blockwise: True
+        extract_patches_block_size_r: 1000
+        extract_patches_block_size_c: 1000
+
+        to_predict_patches_blockwise: True
+        predict_patches_block_size_r: 1000
+        predict_patches_block_size_c: 1000
+ 
+```
+
+**5.1 patch samples** are defined by ***patch_data_params***. If ***save_extracted_patches*** is True, all patch samples will be saved into hard disk, so that next time they will be automatically loaded. But, if you have limited hard disk space, you may want to set it to False. 
+
+**5.2 use GPU.** If ***extract_patches_cuda*** is True, GPU will be used to extract patches. If ***is_dataset_cuda*** is True, all extracted patches will be deployed onto GPU. If you have limited GPU memeory or too many patches, you may want to set it to False, and then only one batch will be deployed onto GPU when training, instead of all batches.
+
+**5.3 blcokwise computation.** If ***to_extract_patches_blockwise***, patch samples will be extracted in a block wise manner, meaning that when extracting patches, SIP will load and scan each block instead of the whole image. You may want to use this preference, if you have large image or limited memory. Similarly, if ***to_predict_patches_block_wise*** is True, SIP will load and predict each block instead of the whole image in case of large image or limited memory resource. 
+
+**5.4 image samples** are defined by ***img_data_params***, where ***split_size*** defines the size of the sub-images and ***overlap*** defines the overlapping width between two adjacent sub-images.    
+
+# 6. Training parameters
+
+Here, it defines all the parameters related to classifier training.
+
+```
+train_params: 
+    lr: 0.0001
+    epoch: 50  
+    batch_size_train: 2000 # batch_size when doing training
+    batch_size_val: 20000 # batch_size when doing val and test
+    val_inter: 1 # if 1, then validation and test are used in each epoch 
+    to_test: False # is True, both validation and test data will be used to evaluate training
+    prop_test: 1 # if 0.1, then 10% of all test samples are used in each epoch
+    prop_train: 0.0001 # if 0.1, then 10% of all train samples are used in each epoch
+    var: 0.05 # std of noise added to input when using images as input 
+    net_type: knn
+ 
+    train_mask_save_options:
+        save_train_mask: False
+        img_format: png
+    
+    input_img_save_options:
+        save_input_img: False # if True, original images will be saved
+        img_format: png
+        is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
+        rgb_bands: 0_0_0 # specify r, g, and b channels
+        vmin: 0 # vmin of gray image, [vmin, vmax] is the range that the colormap covers
+        vmax: 255 # vmax of gray image, [vmin, vmax] is the range that the colormap covers
+
+    map_save_options:
+        save_classification_map: True
+        img_format: png
+        copy_map_to_raw_data_dir: True
+        save_map_over_epoch: True
+        use_background_pixels: True
+
+
+train_result_params:
+    train_log_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_epoch50_lr0.0001_time20200613223826_train.log
+    model_file: ss_res_batchSize2000_bestEpoch50_lr0.0001_time20200613225304_weights.pkl
+    train_config_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_bestEpoch50_lr0.0001_time20200613225304__time20200613225305_train_config.yaml
+
+``` 
+
+**6.1 which classifier to use** is defined by ***net_type***. 
+
+**6.2 some parameters are only relevant to neural network models.** ***epoch*** defines how many iterations of trying out all training samples. ***batch_size_train*** and ***batch_size_val*** are respectively the batch sizes of the training and validation operation. ***val_inter*** defines how many epochs have to be finished before performing one validation of the classifier. ***var*** defines the standard deviation of the noise added to the input data when using fully convolutional neural network (FCN) classifiers. 
+
+**6.3 use a subset of training or test samples.** If you do not want to use all the training or test samples, you can use ***prop_train*** to specify the percentage of training samples randomly picked up in training, and ***prop_test*** for the percentage of random test samples to use. 
+
+**6.4 save training mask.** If you want to  
 
 Intelligent pixel-level image classification using deep neural networks.
 
