@@ -60,7 +60,7 @@
 - Check ***the training and validation accuracies*** in the "train_log" file under the "save_model" folder specified in the .yaml config file you edited. 
 - Change the ***number of epoches*** in the .yaml config file and see what happens. 
 
-**Step 8: Predict label map on the other two landsat scenes.** 
+**Step 11: Predict label map on the other two landsat scenes.** 
 - Click on ***"Predict image"*** to run the trained model on the other scene in the folder.
 - Once it is done, you can also check the label map in the "Image List" panel, and also in the ***/all_data/save/predict/*** folder. You also need to select the same .yaml config file.
 - Check the "predict_log" file under the "save_model" folder specified in the .yaml config file. 
