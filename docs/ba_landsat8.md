@@ -1,172 +1,66 @@
+# Wildfire burned and unburned area classification from Landsat-8 images
 
-# SIP (smart image processing) 
+**Step 1: Download Landsat-8 wildfire images**
+- Go to USGS EarthExplorer (https://earthexplorer.usgs.gov/);
+- Under the 'Data Sets' panel, select 'Landsat', 'Landsat Collection 1 Level-1', and 'Landsat 8 OLI/TIRS C1 Level-1'
+- Under the 'Additional Criteria' panel, fill 'Landsat Product Identifier' with LC08_L1TP_001069_20191013_20191018_01_T1.tar.gz to find the first scene and download it. 
+- Similarly search LC08_L1TP_220067_20191011_20191018_01_T1, LC08_L1TP_228070_20191003_20191018_01_T1 and LC08_L1TP_229071_20191010_20191018_01_T1 to download the other three scenes. 
 
-Intelligent pixel-level image classification using deep neural networks.
+**Step 2: Download FIRMS active wildfire/hotspot shapefile data**
+- Go to https://firms.modaps.eosdis.nasa.gov/download/;
+- Create a new request of shapefile covering South America from 2019.01.01 to 2019.12.31; 
+- Download data when it is ready;
 
-![](./pics/vhr.png)
+**Step 3: Run app and preprocess Landsat-8 raw data** 
+- Copy all downloaded .tar.gz files to the SIP/data/landsat8_raw_zip/ folder. 
+- Edit ***landsat8_config_os.yaml*** to ensure all parameters are setted correctly. See [config file](config_file.md) for instructions. Here, you may want to set ***multilook_number: 1*** to keep the same size, ***low and high_percentage_to_remove: 0.02*** to increase image contrast for better visualization;
+- Run SIP, and click on ***"preprocessing -> Landsat8 L1TP"***;
+- First select the /data/landsat8_raw_zip/ folder, and then ***select the landsat8_config_os.yaml file*** you just edited. 
+- Take a look at the preprocessed scenes in /data/landsat8_preprocessed_imgs/ folder;
 
-# Features
-
-* **Strong feature learning capability** of deep neural networks to capture weak signature information for accurate pixel-level classification and mapping.
-
-* **Fast processing and mapping** of a large number of image scenes by leverating GPU computation;
-
-* **Quickly drawing some examplar pixels** using lines, points and polygons on one scene gives you high-precision pixel-level label map of the whole scene;
-
-* Quickly drawing some lines, points and polygons on mutiple scenes gives you **a robust classifer that generates accurate predictions on new images**; 
-
-* Accurate pixel-level classification and mapping of **many hundreds or thousands large scenes** (e.g., 5k by 5k pixels) can be achived within a single day using **a single desktop with GPU**;
-
-* **Safe and convenient** for research, industry or governmental usage where all the data and data processing is local, avoiding the troubles of uploading your data to the cloud.
-
-* Runs on **multiple system settings**, e.g., loptop with/without GPU, desktop with/without GPU, server with/without GPU; 
-
-* Runs on **multiple operational systems**, e.g., Linux, Windows, MacOS; 
-
-* **Strong preprocessing functionalities** to support open source or commercial images, e.g., **Drone hyperspectral/multispectral image**, Sentinel-1/2/3, RADARSAT-1/2, **RADARSAT Constellation Mission (RCM)**, Landsat, MODIS, Drone images, and other **biomedical and industrial images**;
-
-# Documentation
-* [Config file] (docs/config_file.md)
-* [Burned area detection from Landsat8 Images] (docs/ba_landsat8.md)
-<!---* [Getting started](docs/get-started.md)--->
-<!---* [Introduction](intro.md)--->
-<!---* [Parameters](parameters.md)--->
-<!---* [How To](how-to.md)--->
-<!---* [FAQ](faq.md)--->
-<!---* [Related Websites](related-website.md)--->
+**Step 4: Open false color composite 652 for visualization**
+- In SIP, click the ***Open and image*** button to open the rgb652 false color image of the LC08_L1TP_001069_20191013_20191018_01_T1_rgb652 scene in the /data/landsat8_preprocessed_imgs folder; Click on ***no*** when it asks you for label file. 
 
 
-## Installation guide:
+**Step 5: Edit class labels**
+- In SIP, click the ***Edit class labels*** button, and type 4 and click ok button; 
+- Type 'burn_train', 'burn_val', 'unburn_train', 'unburn_val' respectively for label names 2, 3, 4, 5; then, select different colors for these 2, 3, 4, 5 classes. Here, 'burn' and 'unburn' have to be exactly the same with the ***my_classes*** parameter in the [config file](config_file.md). 
 
-**Step 1: Install anaconda.** Install conda for python 3.7: https://docs.anaconda.com/anaconda/install/linux/. For Winows, please go to https://www.anaconda.com/distribution/. 
-
-**Step 2: Create python 3.8.2 environment.** Create a conda environment 'py38' that runs on python version 3.8.2. 
-```
-conda create -n py38 python=3.8
-```
-
-**Step 3: Activate 'py38':**
-
-```
-conda activate py38
-```
-
-**Step 4: Install the following packages:**
-```
-conda install pytorch 
-conda install pandas
-conda install -c anaconda pyqt
-conda install -c anaconda scikit-image
-conda install -c anaconda scikit-learn
-conda install pyyaml
-conda install git
-```
-For Windows, the above applies except pytorch. Please use 
-```
-conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
-```
-
-**Step 5: Cd to your home folder, and run**
-```
-cd you_home_folder
-git clone https://github.com/spectrumAI/SIP.git
-```
-
-cd to the folder 'SIP' to run the app:
-```
-cd SIP
-python SIP.py
-```
-
-**Step 6: Get a license to run.** Please email spectrumaitech@gmail.com with your name and organization to get a free license. Put the license.lic under the pytransform folder and replace the old one. 
-
-# Process Sentinel-1 SAR image for sea ice classification
-
-![](./pics/classify.gif)
-
-**Step 1: Run app and open data.** 
-- Run SIP;
-- Open the '.json' file in ***'SIP/data/sentinel1_preprocessed_imgs'***;
-- Also open the associated '.tiff' image.
-
-**Step 2: Draw region of interst (ROI).**  
+**Step 6: Draw ground truth (ROI) for the 4 classes**  
 - ***Double click a class*** in the 'Label List' panel on the right to choose a class; 
-- Draw point, or line or polygon to add more ROI for this class;
+- Draw line or polygon to add more ROI for this class;
 - ***To finish drawing line and polygon, type 'c' from keyboard***;
 - Save drawing using default name;
+- If you want to delete a ROI, click the ***Edit drawing*** button, move the mouse to the ROI, and press the ***delete button*** when the ROI boundary turns white;
+- If you want to move a ROI, click the ***Edit drawing*** button, move the mouse to the ROI, and drag it when the ROI boundary turns white; 
+- If you want to change the label of a ROI, click the ***Edit drawing*** button, move the mouse to the ROI, and right click it when the ROI boundary turns white. Select the class you want from the pop up window;
+- Open the .shp files you downloaded in step 2 in QGIS to help you better identify burned and unburned areas;
+- Once you finished ground truthing LC08_L1TP_001069_20191013_20191018_01_T1_rgb652, do the same for LC08_L1TP_228070_20191003_20191018_01_T1_rgb652. 
 
-**Step 3: Prepare label mask.** 
-- Click on ***"prepare label mask"***, and then specify the csv file you just saved;
-- This step transfer ROIs from vectors to images;
+**Step 7: Edit config file.** 
+- Open the ***"landsat8_config_os.yaml"*** config file in the 'config' folder;
+- **Make sure you have changed all dirs to your own directories**. See [config file](config_file.md) for instructions. 
+
+**Step 8: Prepare label mask.** 
+- Click on ***"prepare label mask"*** under ***classification*** menu;
+- First select the config file you just edited, and then select the two csv files you just saved for the two scenes;
+- This step transfer ROIs from vectors to mask images;
 - Take a look at the png images generated in the "Image List" panel on the left;
 
-**Step 4: Edit config file.** 
-- Open the ***"sentinel1_config_os.yaml"*** config file in the 'config' folder;
-- **Make sure you have changed all dirs to your own directories**.
-
-**Step 5: Prepare all dirs and data.** 
-- Click on ***"prepare all dirs and data"*** to prepare all training, test and prediction data. 
+**Step 9: Prepare all dirs and data.** 
+- Click on ***"prepare all dirs and data"*** under ***classification*** menu to prepare all training, test and prediction data. 
 - You need to choose the .yaml 'config' file you just edited. 
-- Take a look at all the folders generated and the 'npz' files. 
+- Once finished, take a look at all the folders generated and 'npz' files under ***data*** folders and 'png' mask files under ***mask*** folders in ***train***, ***val*** and ***test***.  
 
-**Step 6: Train classifier.** 
-- Click on ***'train classifier'*** and then choose the .yaml config file you just edited. 
+**Step 10: Train classifier.** 
+- Click on ***'train classifier'*** under ***classification*** menu and then choose the .yaml config file you just edited. 
 - Once training is finished, you can see the generated label map by clicking on this file in the 'Image List' panel on the left. 
 - Check ***the training and validation accuracies*** in the "train_log" file under the "save_model" folder specified in the .yaml config file you edited. 
 - Change the ***number of epoches*** in the .yaml config file and see what happens. 
 
-**Step 7: Test classifier.** 
-- You can optionally run ***"Test classifier"***, but it will run on the same image in this example. 
-- You also need to select the same .yaml config file. 
-- Check the ***test accuracies*** in the "test_log" file under the "save_model" folder specified in the .yaml config file.  
-
-**Step 8: Predict label map on a new image.** 
+**Step 8: Predict label map on the other two landsat scenes.** 
 - Click on ***"Predict image"*** to run the trained model on the other scene in the folder.
-- Once it is done, you can also check the label map in the "Image List" panel. You also need to select the same .yaml config file.
+- Once it is done, you can also check the label map in the "Image List" panel, and also in the ***/all_data/save/predict/*** folder. You also need to select the same .yaml config file.
 - Check the "predict_log" file under the "save_model" folder specified in the .yaml config file. 
 
-
-# Preprocess raw Sentinel-1 data by just one click:
-
-**Step 1: Download data.** Downlaod Sentinel1 SAR scenes from https://search.asf.alaska.edu/#/.
-
-**Step 2: Copy all downloaded .zip files to /data/sentinel1_raw_zip/ folder.** 
-
-**Step 3: Preprocess.** 
-- Run SIP, and click on ***"preprocessing -> sentinel1"***;
-- First select the /data/sentinel1_raw_zip/ folder, and then ***select the sentinel1_config_os.yaml file***;
-- Take a look at the preprocessed scenes in /data/sentinel1_preprocessed_imgs/ folder;
-- Change the 'multilook_num' parameter in the .yaml config file and re-run the program to see what happens. 
-
-**Step 4: Classification.** Go to step 1 in the sentinel-1 example and start from there to finish.
-
-# Preprocess raw Landsat8 L1TP data. 
-
-**Step 1: Download data.** Downlaod Landsat8 L1TP scenes from USGS Earthexplorer https://earthexplorer.usgs.gov. 
-
-**Step 2: Copy all downloaded .tar.gz files to /data/landsat8_raw_zip/ folder.** 
-
-**Step 3: Preprocess.** 
-- Run SIP, and click on ***"preprocessing -> Landsat8 L1TP"***;
-- First select the /data/landsat8_raw_zip/ folder, and then ***select the landsat8_config_os.yaml file***;
-- Take a look at the preprocessed scenes in /data/landsat8_preprocessed_imgs/ folder;
-- Change the 'multilook_num' parameter in the .yaml config file and re-run the program to see what happens. 
-
-**Step 4: Classification.** Go to step 1 in the sentinel-1 example and start from there to finish.
-
-
-
-# Process RCM SLC CP Winnipeg scene for land cover classification
-
-**Step 1: Download data.** Downlaod Winnipeg RCM SLC CP scene from ftp://ftp.asc-csa.gc.ca/users/OpenData_DonneesOuvertes/pub/RCM/. Copy the data to /data/rcm_raw_data/ folder.
-
-**Step 2: Edit config file** Open config/rcm_slc_cp_config.yaml, and change all dirs to your own dirs.
-
-**Step 3: Open file.** Run SIP, and click on "preprocessing" manu, and click on "RCM SLC CP". ** You need to first select the .safe file in RCM SLC CP data folder, and then select the .yaml file you just edited.
-
-**Step 4: Classification.** Go to step 3 in the sentinel-1 example and start from there to finish.
-
-![](./pics/rcm.png)
-
-![](./pics/rcm_result.png)
 
