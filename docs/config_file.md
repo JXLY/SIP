@@ -254,174 +254,184 @@ train_result_params:
 
 **6.3 use a subset of training or test samples.** If you do not want to use all the training or test samples, you can use ***prop_train*** to specify the percentage of training samples randomly picked up in training, and ***prop_test*** for the percentage of random test samples to use. 
 
-**6.4 save training mask.** If you want to  
+**6.4 save training mask.** If you want to save training masks you can so do by setting ***save_train_mask*** and ***img_format***. 
 
-Intelligent pixel-level image classification using deep neural networks.
+**6.5 save input images.** If you want to save the input images into some custormized format, you can use parameters under ***input_img_save_options***. 
 
-![](./pics/vhr.png)
-
-# Features
-
-* **Strong feature learning capability** of deep neural networks to capture weak signature information for accurate pixel-level classification and mapping.
-
-* **Fast processing and mapping** of a large number of image scenes by leverating GPU computation;
-
-* **Quickly drawing some examplar pixels** using lines, points and polygons on one scene gives you high-precision pixel-level label map of the whole scene;
-
-* Quickly drawing some lines, points and polygons on mutiple scenes gives you **a robust classifer that generates accurate predictions on new images**; 
-
-* Accurate pixel-level classification and mapping of **many hundreds or thousands large scenes** (e.g., 5k by 5k pixels) can be achived within a single day using **a single desktop with GPU**;
-
-* **Safe and convenient** for research, industry or governmental usage where all the data and data processing is local, avoiding the troubles of uploading your data to the cloud.
-
-* Runs on **multiple system settings**, e.g., loptop with/without GPU, desktop with/without GPU, server with/without GPU; 
-
-* Runs on **multiple operational systems**, e.g., Linux, Windows, MacOS; 
-
-* **Strong preprocessing functionalities** to support open source or commercial images, e.g., **Drone hyperspectral/multispectral image**, Sentinel-1/2/3, RADARSAT-1/2, **RADARSAT Constellation Mission (RCM)**, Landsat, MODIS, Drone images, and other **biomedical and industrial images**;
-
-# Documentation
-* [Config file] (docs/config_file.md)
-* [Burned area detection from Landsat8 Images] (docs/ba_landsat8.md)
-<!---* [Getting started](docs/get-started.md)--->
-<!---* [Introduction](intro.md)--->
-<!---* [Parameters](parameters.md)--->
-<!---* [How To](how-to.md)--->
-<!---* [FAQ](faq.md)--->
-<!---* [Related Websites](related-website.md)--->
+**6.6 save classification maps of the training images.** If you want to predict all pixels in the training images using the trained model, and generate classification maps, you can set ***save_classification_map*** to be True. ***copy_map_to_raw_data_dir*** will copy the maps from ***dirs/save/train*** to ***raw_img_dir*** for easier access in SIP. ***save_map_over_epoch*** enables saving classification maps for all epochs during training FCN classifiers. It does not work for the other classifiers. ***use_background_pixels*** determines whether the background pixels will be predicted and shown in the classification map as meaningful classes.   
 
 
-## Installation guide:
+**6.7 train result parameters** specify the log file, model file and a copy of the config file. These three parameters are automatically setted after training by the software. But, you can manually set these parameters, e.g., the model file, to enable the loading of a parcicular model for testing or prediction. 
 
-**Step 1: Install anaconda.** Install conda for python 3.7: https://docs.anaconda.com/anaconda/install/linux/. For Winows, please go to https://www.anaconda.com/distribution/. 
+# 7. Test parameters
 
-**Step 2: Create python 3.8.2 environment.** Create a conda environment 'py38' that runs on python version 3.8.2. 
-```
-conda create -n py38 python=3.8
-```
-
-**Step 3: Activate 'py38':**
+SIP allows to define all parameters related to classifier testing. These parameters are similar to the training parameters. Please see the training parameters for how to set the parameters here.
 
 ```
-conda activate py38
+test_params:
+    batch_size: 20000 # batch size for test
+    
+    test_mask_save_options:
+        save_test_mask: False
+        img_format: png
+        
+    input_img_save_options:
+        save_input_img: False # if True, original images will be saved
+        img_format: png
+        is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
+        rgb_bands: 0_0_0 # specify r, g, and b channels
+        vmin: 0 # vmin of gray image, [vmin, vmax] is the range that the colormap covers
+        vmax: 255 # vmax of gray image, [vmin, vmax] is the range that the colormap covers
+    map_save_options:
+        save_classification_map: True
+        img_format: png
+        copy_map_to_raw_data_dir: True
+        use_background_pixels: False
+
+test_result_params:
+    test_log_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_epoch200_lr0.0001_time20200418170713_time20200418171406_test.log
+    test_config_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_bestEpoch198_lr0.0001_time20200418171144_time20200418171406_test_config.yaml
+ 
 ```
 
-**Step 4: Install the following packages:**
+
+# 8. Prediction parameters
+
+SIP allows to define all parameters related to map prediction. These parameters are similar to the training parameters. Please see the training parameters for how to set the parameters here. 
+
 ```
-conda install pytorch 
-conda install pandas
-conda install -c anaconda pyqt
-conda install -c anaconda scikit-image
-conda install -c anaconda scikit-learn
-conda install pyyaml
-conda install git
+predict_params:
+    
+    batch_size: 20000 # batch size for predict
+    
+    input_img_save_options:
+        save_input_img: False # if True, original images will be saved
+        img_format: png
+        is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
+        rgb_bands: 0_0_0 # specify r, g, and b channels
+        vmin: 0 # vmin of gray image, [vmin, vmax] is the range that the colormap covers
+        vmax: 255 # vmax of gray image, [vmin, vmax] is the range that the colormap covers
+
+    map_save_options:
+        load_hardlabel_and_generate_map: False #if True, no prediction, just load label and generate map
+        save_classification_map: True
+        img_format: png
+        copy_map_to_raw_data_dir: True
+        use_background_pixels: True
+
+predict_result_params:
+    predict_log_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/svm_batchSize2000_epoch50_lr0.0001_time20200613003824_time20200613141535_predict.log
+    predict_config_file: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/all_data/save/model/svm_time20200613020453_time20200613141535_predict_config.yaml
+
 ```
-For Windows, the above applies except pytorch. Please use 
+
+# 9. Define different classifiers
+
+SIP offers three different types of classifiers, i.e., classic machine learning classifiers, patch-based convolutinoal neural network (CNN) classifiers, and the image-based fully covolutional neural network (FCN) classifiers. Please use  
+
+* **classic classifiers** include the ***svm***, ***random forest (rf)*** and the ***k-nearest neighbors (knn)*** classifiers. These classifiers are in the ***classic_ml_model_list***. 
+
+* **CNN classifiers** include spatial-spectral residual net ***ss-res*** and spatial-spectral CNN ***ss-cnn***. These classifiers are in the ***patch_model_list***. 
+
+* **FCN classifiers** include deep image prior residual net ***dip_res*** classifier, which is in the ***dip_model_list***. 
+
 ```
-conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
-```
+net_params:
+    
+    ss_res: 
+        channels: 20
+        blocks: 3
+        is_bn: True
+        is_dropout: False
+        p: -0.2
+    
+    ss_cnn: 
+        feature_nums:
+            - 16
+            - 32
+        is_bn: True
+        is_dropout: False
+        p: -0.2
 
-**Step 5: Cd to your home folder, and run**
-```
-cd you_home_folder
-git clone https://github.com/spectrumAI/SIP.git
-```
+    knn:
+        innate: 
+            n_jobs: -1
+        grid_search:
+            k_range:
+                start: 1
+                end: 30
+            weight_options:
+                - uniform
+                - distance
 
-cd to the folder 'SIP' to run the app:
-```
-cd SIP
-python SIP.py
-```
+    rf: 
+        innate: 
+            n_jobs: -1
+            oob_score: True
+            class_weight: balanced
+        grid_search:
+            n_estimators:
+                - 10
+                - 30
+                - 50
+                - 70
+                - 100
+                - 120
+                - 150
+            max_features:
+                - auto
+                - sqrt
+                - log2
+            #min_sample_split:
+            #    - 2
+            #    - 4
+            #    - 6
+            #min_sample_leaf:
 
-**Step 6: Get a license to run.** Please email spectrumaitech@gmail.com with your name and organization to get a free license. Put the license.lic under the pytransform folder and replace the old one. 
+    svm:
+        innate:
+            class_weight: balanced
+            probability: True
+        grid_search:
+            kernel:
+                - rbf
+                - linear
+            C:
+                - 0.01
+                - 0.1
+                - 1 
+                - 10
+                - 100
+            gamma:
+                - 1
+                - 0.1
+                - 0.01
+                - 0.001
+            decision_function_shape: 
+                - ovr
+                - ovo
+        crf:
+            crf: unknown
 
-# Process Sentinel-1 SAR image for sea ice classification
+    dip_res: 
+        channels: 4
+        blocks: 5
+        act_fun: LeakyReLU  # LeakyRELU ReLU ...
+        pad: reflection  # reflection zero ...
+    
+    
 
-![](./pics/classify.gif)
+dip_model_list:
+    - dip_res
 
-**Step 1: Run app and open data.** 
-- Run SIP;
-- Open the '.json' file in ***'SIP/data/sentinel1_preprocessed_imgs'***;
-- Also open the associated '.tiff' image.
+patch_model_list:
+    - ss_res
+    - ss_cnn
 
-**Step 2: Draw region of interst (ROI).**  
-- ***Double click a class*** in the 'Label List' panel on the right to choose a class; 
-- Draw point, or line or polygon to add more ROI for this class;
-- ***To finish drawing line and polygon, type 'c' from keyboard***;
-- Save drawing using default name;
+classic_ml_model_list:
+    - svm
+    - rf
+    - knn
+``` 
 
-**Step 3: Prepare label mask.** 
-- Click on ***"prepare label mask"***, and then specify the csv file you just saved;
-- This step transfer ROIs from vectors to images;
-- Take a look at the png images generated in the "Image List" panel on the left;
-
-**Step 4: Edit config file.** 
-- Open the ***"sentinel1_config_os.yaml"*** config file in the 'config' folder;
-- **Make sure you have changed all dirs to your own directories**.
-
-**Step 5: Prepare all dirs and data.** 
-- Click on ***"prepare all dirs and data"*** to prepare all training, test and prediction data. 
-- You need to choose the .yaml 'config' file you just edited. 
-- Take a look at all the folders generated and the 'npz' files. 
-
-**Step 6: Train classifier.** 
-- Click on ***'train classifier'*** and then choose the .yaml config file you just edited. 
-- Once training is finished, you can see the generated label map by clicking on this file in the 'Image List' panel on the left. 
-- Check ***the training and validation accuracies*** in the "train_log" file under the "save_model" folder specified in the .yaml config file you edited. 
-- Change the ***number of epoches*** in the .yaml config file and see what happens. 
-
-**Step 7: Test classifier.** 
-- You can optionally run ***"Test classifier"***, but it will run on the same image in this example. 
-- You also need to select the same .yaml config file. 
-- Check the ***test accuracies*** in the "test_log" file under the "save_model" folder specified in the .yaml config file.  
-
-**Step 8: Predict label map on a new image.** 
-- Click on ***"Predict image"*** to run the trained model on the other scene in the folder.
-- Once it is done, you can also check the label map in the "Image List" panel. You also need to select the same .yaml config file.
-- Check the "predict_log" file under the "save_model" folder specified in the .yaml config file. 
-
-
-# Preprocess raw Sentinel-1 data by just one click:
-
-**Step 1: Download data.** Downlaod Sentinel1 SAR scenes from https://search.asf.alaska.edu/#/.
-
-**Step 2: Copy all downloaded .zip files to /data/sentinel1_raw_zip/ folder.** 
-
-**Step 3: Preprocess.** 
-- Run SIP, and click on ***"preprocessing -> sentinel1"***;
-- First select the /data/sentinel1_raw_zip/ folder, and then ***select the sentinel1_config_os.yaml file***;
-- Take a look at the preprocessed scenes in /data/sentinel1_preprocessed_imgs/ folder;
-- Change the 'multilook_num' parameter in the .yaml config file and re-run the program to see what happens. 
-
-**Step 4: Classification.** Go to step 1 in the sentinel-1 example and start from there to finish.
-
-# Preprocess raw Landsat8 L1TP data. 
-
-**Step 1: Download data.** Downlaod Landsat8 L1TP scenes from USGS Earthexplorer https://earthexplorer.usgs.gov. 
-
-**Step 2: Copy all downloaded .tar.gz files to /data/landsat8_raw_zip/ folder.** 
-
-**Step 3: Preprocess.** 
-- Run SIP, and click on ***"preprocessing -> Landsat8 L1TP"***;
-- First select the /data/landsat8_raw_zip/ folder, and then ***select the landsat8_config_os.yaml file***;
-- Take a look at the preprocessed scenes in /data/landsat8_preprocessed_imgs/ folder;
-- Change the 'multilook_num' parameter in the .yaml config file and re-run the program to see what happens. 
-
-**Step 4: Classification.** Go to step 1 in the sentinel-1 example and start from there to finish.
-
-
-
-# Process RCM SLC CP Winnipeg scene for land cover classification
-
-**Step 1: Download data.** Downlaod Winnipeg RCM SLC CP scene from ftp://ftp.asc-csa.gc.ca/users/OpenData_DonneesOuvertes/pub/RCM/. Copy the data to /data/rcm_raw_data/ folder.
-
-**Step 2: Edit config file** Open config/rcm_slc_cp_config.yaml, and change all dirs to your own dirs.
-
-**Step 3: Open file.** Run SIP, and click on "preprocessing" manu, and click on "RCM SLC CP". ** You need to first select the .safe file in RCM SLC CP data folder, and then select the .yaml file you just edited.
-
-**Step 4: Classification.** Go to step 3 in the sentinel-1 example and start from there to finish.
-
-![](./pics/rcm.png)
-
-![](./pics/rcm_result.png)
 
