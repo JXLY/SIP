@@ -83,4 +83,19 @@
 - compare the classification maps, train accuracy and val accuracy of all four methods (i.e., ss_res, knn, rf, svm);
 
 
+## Compare classifier performance using different number of training samples
+
+**Step 1: train rf on a small number of training samples**
+- Open the ***"landsat8_config_os.yaml"*** config file in the 'config' folder
+- Make sure you set ***net_type: rf***
+- Make sure you set ***patch_size: 1*** to use only single pixels
+- Set ***prop_train: 0.0001*** to use 0.01% of all the training samples. Write down the total number of training samples. 
+
+**Step 2: train rf on different number of training samples**
+- Open the same config file ***"landsat8_config_os.yaml"*** 
+- Do three more experiments using respectively ***prop_train: 0.0005***, ***prop_train: 0.001***, and ***prop_train: 0.01*** to get the four classification maps and val accuracies;
+
+**Step 3: do the same for svm, knn, and res_ss**
+- go over step 1 and step 2, but replace rf with the other classifiers;
+- once finished, each classifier 4 test and validation accuracies and 4 maps; compare these results;
 
