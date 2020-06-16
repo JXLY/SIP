@@ -14,7 +14,7 @@
 - Save drawing using default name;
 
 **Step 3: Edit config file.** 
-- Open the ***"sentinel1_config_os.yaml"*** config file in the 'config' folder;
+- Copy the ***sentinel1_config_os.yaml.bak*** in the config folder and change its name to ***sentinel1_config_os.yaml***;
 - **Make sure you have changed all dirs to your own directories**.
 
 **Step 4: Prepare label mask.** 

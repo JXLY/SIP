@@ -13,7 +13,8 @@
 - Download data when it is ready;
 
 **Step 3: Run app and preprocess Landsat-8 raw data** 
-- Copy all downloaded .tar.gz files to the SIP/data/landsat8_raw_zip/ folder. 
+- Copy all downloaded .tar.gz files to the SIP/data/landsat8_raw_zip/ folder;
+- Copy the ***landsat8_config_os.yaml*** in the config folder and change its name to ***landsat8_config_os.yaml***;
 - Edit ***landsat8_config_os.yaml*** to ensure all parameters are setted correctly. See [config file](config_file.md) for instructions. Here, you may want to set ***multilook_number: 1*** to keep the same size, ***low and high_percentage_to_remove: 0.02*** to increase image contrast for better visualization;
 - Run SIP, and click on ***"preprocessing -> Landsat8 L1TP"***;
 - First select the /data/landsat8_raw_zip/ folder, and then ***select the landsat8_config_os.yaml file*** you just edited. 

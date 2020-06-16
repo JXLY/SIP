@@ -55,8 +55,8 @@ Intelligent pixel-level image classification using deep neural networks.
 - Save drawing using default name;
 
 **Step 3: Edit config file.** 
-- Open the ***"sentinel1_config_os.yaml"*** config file in the 'config' folder;
-- **Make sure you have changed all dirs to your own directories**.
+- Copy ***"sentinel1_config_os.yaml.bak"*** in the 'config' folder and change name to ***sentinel1_config_os.yaml***;
+- **Make sure you have changed all dirs to your own directories**;
 
 **Step 4: Prepare label mask.** 
 - Click on ***"prepare label mask"*** under ***classification*** menu;
