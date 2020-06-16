@@ -6,7 +6,7 @@
 
 ## Q2: How do I set the class labels in SIP GUI before drawing ground truths?
 
-**A2:** The class label has two parts, looks like ***xxx_###***, where ***xxx*** is the class name, and ***###*** is one of ***train***, ***val***, ***test***. The class name ***xxx*** has to be consistent with the class names under ***my_classes***. So, if you have a class label like ***ice_train***, then you will use it to draw the training samples for the ***ice*** class. 
+**A2:** The class label has two parts, looks like ***xxx_###***, where ***xxx*** is the class name, and ***###*** is one of ***train***, ***val***, ***test***. The class name ***xxx*** has to be consistent with the class names under ***my_classes*** in the [config file](config_file.md). So, if you have a class label like ***ice_train***, then you will use it to draw the training samples for the ***ice*** class. 
 
 ## Q3: If I have 20 image scenes, how do I split them into training and test set?
 
