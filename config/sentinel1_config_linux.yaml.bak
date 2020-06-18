@@ -253,8 +253,8 @@ net_params:
             n_jobs: -1
         grid_search:
             k_range:
-                start: 1
-                end: 30
+                knn_start: 1
+                knn_end: 30
             weight_options:
                 - uniform
                 - distance
