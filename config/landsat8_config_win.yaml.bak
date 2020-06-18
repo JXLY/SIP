@@ -19,6 +19,7 @@ landsat8_params:
 raw_data_params:
     raw_img_dir: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs
     raw_img_type: tiff
+    is_geotiff: True #if True, the projection and geotransform information will be saved when preparing data
     raw_id_str_range: #from 'start' to 'end' in the name of the raw image are the string that differenciate different scenes
         start: 10
         end: 34
@@ -127,7 +128,7 @@ classification_map_params:
     #define the indicator of the background class whose class identity is unknown
     #the color of the background class is defined as the first color in 'my_colors'
     background_class_indicator: 0
-
+    to_geocode_classification_map: True
 
 data_params: 
 
@@ -182,8 +183,7 @@ train_params:
         copy_map_to_raw_data_dir: True
         save_map_over_epoch: True
         use_background_pixels: True
-
-
+    
 train_result_params:
     train_log_file: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs\all_data\save\model\ss_res_batchSize2000_epoch50_lr0.0001_time20200613223826_train.log
     model_file: ss_res_batchSize2000_bestEpoch50_lr0.0001_time20200613225304_weights.pkl

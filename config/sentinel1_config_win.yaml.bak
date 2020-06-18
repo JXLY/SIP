@@ -18,6 +18,7 @@ sentinel1_params:
 raw_data_params:
     raw_img_dir: C:\Users\l44xu\SIP\data\sentinel1_preprocessed_imgs\
     raw_img_type: tiff
+    is_geotiff: True
     raw_id_str_range: #from 'start' to 'end' in the name of the raw image are the string that differenciate different scenes
         start: 26
         end: 71

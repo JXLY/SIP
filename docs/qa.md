@@ -12,5 +12,9 @@
 
 **A3:** The simplest approach is use half for training and the rest half for testing. In order to do this, you only draw ***train*** and ***val*** ground truth samples for the 10 training scenes. And, for the rest of the 10 test scenes, you only draw ***test*** ground truth samples. If not, say you draw ***test*** samples on a training scene, then this scene will also be used to test the algorithmbased on these test samples. 
 
+## Q4: Can I mosaic the classificaiton maps of different scenes into a single map that covers my study area?
+
+**A4:** Yes, if your input data is geocoded, and you set ***is_geotiff*** to be True, and ***to_geocode_classification_map*** to be True in the [config file](config_file.md)
+
 
 

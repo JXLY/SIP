@@ -30,6 +30,7 @@ SIP automatically prepares the data for classification. No manual operatoins are
 raw_data_params:
     raw_img_dir: /home/l44xu/SIP/data/landsat8_preprocessed_imgs
     raw_img_type: tiff
+    is_geotiff: True
     raw_id_str_range: #from 'start' to 'end' in the name of the raw image are the string that differenciate different scenes
         start: 10
         end: 34
@@ -45,6 +46,7 @@ raw_data_params:
 
 **2.3 How does SIP know which bands/channels you want to use.** To tell SIP about this, you need to specify ***raw_band_names*** with different ID names, and make sure your images contain these ID names. In the above code, for each scene, three images whose file name contrain respectively ***B2***, ***B3***, and ***B4*** will be used. 
    
+**2.4 Use geotiff.** If ***is_geotiff*** is True, the projection and geotransform information will be extracted and saved into all extracted features when preparing the data. So, the preprocessed images will be geocoded and saved as geotiff format. And, the classification maps will also be saved as geotiff format if ***to_geocode_classification_map*** equals to True.  
 
 # 3. Copy the prepared data to different folders
 
