@@ -18,11 +18,11 @@ conda activate py38
 conda install pytorch 
 conda install pandas
 conda install -c anaconda pyqt
+conda install -c conda-forge/label/cf201901 gdal
 conda install -c anaconda scikit-image
 conda install -c anaconda scikit-learn
 conda install pyyaml
 conda install git
-conda install -c conda-forge gdal
 ```
 For Windows, the above applies except pytorch. Please use 
 ```
