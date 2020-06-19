@@ -117,7 +117,7 @@ classification_map_params:
     #define the indicator of the background class whose class identity is unknown
     #the color of the background class is defined as the first color in 'my_colors'
     background_class_indicator: 0
-
+    to_geocode_classification_map: True
 
 data_params: 
 
