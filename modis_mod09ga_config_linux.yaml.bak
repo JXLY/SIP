@@ -1,0 +1,346 @@
+
+########################################################################
+# Preprocessing parameters for different sensors
+########################################################################
+
+Modis_MOD09GA_params:
+    MOD09GA_hdf_dir: /home/l44xu/SIP/data/MOD09GA_raw_hdf
+    raw_MOD09GA_format: hdf
+
+    MOD09GA_download_params:
+        to_download_MOD09GA: False
+        Modis_token: F9F48016-B36C-11EA-A12E-AFAFCE286FFE
+        Modis_url: https://ladsweb.modaps.eosdis.nasa.gov/archive/orders/501457698/
+ 
+    MOD09GA_hdf_to_tiff: False 
+    multilook_num: 1
+    low_percentage_to_remove: 0.02
+    high_percentage_to_remove: 0.02
+    
+    value_cut_params:
+        to_calculate_cut_values: True
+        to_use_cut_values: True
+        min_value_cut: -0.0071
+        max_value_cut: 0.795
+
+    MOD09GA_mosaic_params:
+        to_mosaic_MOD09GA: True
+        MOD09GA_merge_days: 1
+
+    output_raw_img_dir: /home/l44xu/SIP/data/MOD09GA_preprocessed_imgs/
+########################################################################
+# Image data parameters
+########################################################################
+raw_data_params:
+    raw_img_dir: /home/l44xu/SIP/data/MOD09GA_preprocessed_imgs/
+    raw_img_type: tiff
+    is_geotiff: True
+    raw_id_str_range: #from 'start' to 'end' in the name of the raw image are the string that differenciate different scenes
+        start: 9
+        end: -5
+    raw_band_names: # each raw scene contrain the following bands, each of which is a seperate image in 'raw_img_type' format
+        - hh 
+        - hv
+
+#########################################################################
+# (A) config directories of images and ground-truth (GT) for classification
+#########################################################################
+
+dirs:
+    image_type: npz
+    mask_type: png
+
+    # A (image, mask) pair is identified by looking for the same file name in the 'data' subfolder and 'mask' subfolder
+    # E.g., 'hsi1.npz' in /data/train/ is associated with 'hsi1.npz' in /mask/train/ folder
+    # ----------------------------------------------------------------
+    # (1) config image directories
+    
+    data: 
+    
+        # (1.1) training_data_dir contains images with GT in training_mask_dir for training
+        train: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/data/train
+        
+        # (1.2) val_data_dir contains images with GT in val_data_dir for validation
+        val: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/data/val
+        
+        # (1.3) test_data_dir contains images with GT in test_mask_dir for test to acquire training accuracies
+        test: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/data/test
+        
+        # (1.4) predict_data_dir contains images that do not have GT for prediction to acquire classification maps
+        predict: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/data/predict
+        
+    #-----------------------------------------------------------------
+    # (2) config GT directories
+    
+    mask:   
+     
+        # (2.1) training_mask_dir contrains one-to-one matching masks with images in training_data_dir
+        train: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/mask/train
+        
+        # (2.2) val_mask_dir contains one-to-one matching masks with images in val_data_dir
+        val: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/mask/val
+        
+        # (2.3) test_mask_dir contains one-to-one matching masks with images in test_data_dir
+        test: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/mask/test
+
+        # (2.4) predict_mask_dir contains the background pixel masks for some images in predict_data_dir
+        predict: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/mask/predict
+        
+    #------------------------------------------------------------------
+    # (3) config results directories
+    
+    save:
+        
+        # (3.1) specify directory to save model i.e. best model log file
+        model: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/model
+        
+        # (3.2) specify directory to save training results i.e. maps accuracies
+        train: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/train
+        
+        # (3.3) specify directory to save val results i.e. maps accuracies
+        val: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/val
+        
+        # (3.4) specify directory to save test results i.e. maps accuracies
+        test: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/test
+        
+        # (3.5) specify directory to save predict results i.e. maps
+        predict: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/predict
+        
+
+######################################################################
+# (B) config training parameters
+
+gpu: 0
+
+use_cuda: True
+
+classification_map_params:
+
+    num_classes: 2
+    
+    class_color_config_params:
+        my_colors:
+            - white # color of the background, e.g., land area in sea ice classification
+            - indigo # color of the first class
+            - yellow  # color of the second class
+        my_classes: # the class names you defined here have to be consistent with the class names appeared in GUI
+                    # e.g., in GUI, if you have land_train, land_val, land_test, water_train, water_val, water_test, 
+                    # then, here you need to have two classes, i.e., land and water. 
+            - background # 0, background mask has to end with 'background_mask.xxx' 
+            - water # 1, the first class name
+            - ice # 2, the second class name
+
+    #define the indicator of the background class whose class identity is unknown
+    #the color of the background class is defined as the first color in 'my_colors'
+    background_class_indicator: 0
+    to_geocode_classification_map: True
+
+data_params: 
+
+    img_data_params: #image input to FCN models
+        split_size: 145
+        overlap: 5
+
+    patch_data_params: #patch input to CNN models with fully connected layers
+        patch_size: 9  # **
+
+        save_extracted_patches: False #whether the extracted patch samples will be saved
+
+        is_dataset_cuda: False # 'True' means all patches deployed on cuda; 'False' means cuda will be used batch-wise; 
+        extract_patch_cuda: False # 'True' means performing F.unfold() on cuda()
+
+        to_extract_patches_blockwise: True
+        extract_patches_block_size_r: 1000
+        extract_patches_block_size_c: 1000
+
+        to_predict_patches_blockwise: True
+        predict_patches_block_size_r: 1000
+        predict_patches_block_size_c: 1000
+        
+train_params: 
+    lr: 0.0001 
+    epoch: 50  
+    batch_size_train: 2000 # batch_size when doing training
+    batch_size_val: 20000 # batch_size when doing val and test
+    val_inter: 1 # if 1, then validation and test are used in each epoch 
+    to_test: False # is True, both validation and test data will be used to evaluate training
+    prop_test: 1 # if 0.1, then 10% of all test samples are used in each epoch
+    prop_train: 1 # if 0.1, then 10% of all the training samples are used in each epoch
+    var: 1 # std of noise added to input when using images as input 
+    net_type: ss_res
+ 
+    train_mask_save_options:
+        save_train_mask: False
+        img_format: png
+    
+    input_img_save_options:
+        save_input_img: False # if True, original images will be saved
+        img_format: png
+        is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
+        rgb_bands: 0_0_0 # specify r, g, and b channels
+        vmin: 0 # vmin of gray image, [vmin, vmax] is the range that the colormap covers
+        vmax: 255 # vmax of gray image, [vmin, vmax] is the range that the colormap covers
+
+    map_save_options:
+        save_classification_map: True
+        img_format: png
+        copy_map_to_raw_data_dir: True
+        save_map_over_epoch: True
+        use_background_pixels: False
+
+train_result_params:
+    train_log_file: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_epoch50_lr0.0001_time20200614232420_train.log
+    model_file: ss_res_batchSize2000_bestEpoch41_lr0.0001_time20200614232653_weights.pkl
+    train_config_file: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_bestEpoch41_lr0.0001_time20200614232653__time20200614232653_train_config.yaml
+
+test_params:
+    batch_size: 20000 # batch size for test
+    
+    test_mask_save_options:
+        save_test_mask: False
+        img_format: png
+        
+    input_img_save_options:
+        save_input_img: False  # if True, original images will be saved
+        img_format: png
+        is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
+        rgb_bands: 0_0_0 # specify r, g, and b channels
+        vmin: 0 # vmin of gray image, [vmin, vmax] is the range that the colormap covers
+        vmax: 255 # vmax of gray image, [vmin, vmax] is the range that the colormap covers
+    map_save_options:
+        save_classification_map: True
+        img_format: png
+        copy_map_to_raw_data_dir: True
+        use_background_pixels: False
+
+test_result_params:
+    test_log_file: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_epoch200_lr0.0001_time20200418170713_time20200418171406_test.log
+    test_config_file: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_bestEpoch198_lr0.0001_time20200418171144_time20200418171406_test_config.yaml
+    
+
+predict_params:
+    
+    batch_size: 20000 # batch size for predict
+    
+    input_img_save_options:
+        save_input_img: False # if True, original images will be saved
+        img_format: png
+        is_rgb: False # whether want to display rgb image, if not, all channels will be saved separately
+        rgb_bands: 0_0_0 # specify r, g, and b channels
+        vmin: 0 # vmin of gray image, [vmin, vmax] is the range that the colormap covers
+        vmax: 255 # vmax of gray image, [vmin, vmax] is the range that the colormap covers
+
+    map_save_options:
+        load_hardlabel_and_generate_map: False #if True, no prediction, just load label and generate map
+        save_classification_map: True
+        img_format: png
+        copy_map_to_raw_data_dir: True
+        use_background_pixels: False
+
+predict_result_params:
+    predict_log_file: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_epoch200_lr0.0001_time20200418170713_time20200418171637_predict.log
+    predict_config_file: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/all_data/save/model/ss_res_batchSize2000_bestEpoch198_lr0.0001_time20200418171144_time20200418171637_predict_config.yaml
+
+ 
+
+#####################################################################
+# (C) config model parameters
+#####################################################################
+
+
+net_params:
+    
+    ss_res: 
+        channels: 20
+        blocks: 3
+        is_bn: True
+        is_dropout: False
+        p: -0.2
+    
+    ss_cnn: 
+        feature_nums:
+            - 16
+            - 32
+        is_bn: True
+        is_dropout: False
+        p: -0.2
+
+    knn:
+        innate: 
+            n_jobs: -1
+        grid_search:
+            k_range:
+                knn_start: 1
+                knn_end: 30
+            weight_options:
+                - uniform
+                - distance
+
+    rf: 
+        innate: 
+            n_jobs: -1
+            oob_score: True
+            class_weight: balanced
+        grid_search:
+            n_estimators:
+                - 10
+                - 30
+                - 50
+                - 70
+                - 100
+                - 120
+                - 150
+            max_features:
+                - auto
+                - sqrt
+                - log2
+            #min_sample_split:
+            #    - 2
+            #    - 4
+            #    - 6
+            #min_sample_leaf:
+
+    svm:
+        innate:
+            class_weight: balanced
+            probability: True
+        grid_search:
+            kernel:
+                - rbf
+                - linear
+            C:
+                - 0.01
+                - 0.1
+                - 1 
+                - 10
+                - 100
+            gamma:
+                - 1
+                - 0.1
+                - 0.01
+                - 0.001
+            decision_function_shape: 
+                - ovr
+                - ovo
+        crf:
+            crf: unknown
+
+    dip_res: 
+        channels: 4
+        blocks: 5
+        act_fun: LeakyReLU  # LeakyRELU ReLU ...
+        pad: reflection  # reflection zero ...
+    
+    
+
+dip_model_list:
+    - dip_res
+
+patch_model_list:
+    - ss_res
+    - ss_cnn
+
+classic_ml_model_list:
+    - svm
+    - rf
+    - knn
