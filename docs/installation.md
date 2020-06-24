@@ -13,9 +13,19 @@ conda create -n py38 python=3.8
 conda activate py38
 ```
 
-**Step 4: Install the following packages:**
+**Step 4: In linux, install the following packages:**
+
 ```
-conda install pytorch 
+conda install pytorch
+``` 
+
+**However, in windows, use the following command:**
+
+```
+conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
+```
+
+** Install the following packages**
 conda install pandas
 conda install -c anaconda pyqt
 conda install -c conda-forge/label/cf201901 gdal
@@ -24,12 +34,9 @@ conda install -c anaconda scikit-learn
 conda install pyyaml
 conda install git
 ```
-For Windows, the above applies except pytorch. Please use 
-```
-conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
-```
 
 **Step 5: Cd to your home folder, and run**
+
 ```
 cd you_home_folder
 git clone https://github.com/spectrumAI/SIP.git
