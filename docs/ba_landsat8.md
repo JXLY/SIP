@@ -24,7 +24,7 @@
 
 - In ArcGIS or QGIS, open the open the rgb753 false color image of the LC08_L1TP_001069_20191013_20191018_01_T1_rgb753 scene in the /data/landsat8_preprocessed_imgs folder. Also, open the active fire points data you downloaded in Step 2. The burned areas have a ***dark red*** color in rgb753 image and should have fire points (hotspots) overlayed on it. When you draw ground truth samples, make sure you follow this criterion.
 
-#![](../pics/ba1.gif)
+![](../pics/ba1.gif)
 
 
 **Step 5: Edit the labels of classes in SIP**
@@ -44,7 +44,6 @@
 **Step 7: Draw train and validation samples for another scene** 
 - Once you finished drawing ground truth samples for LC08_L1TP_001069_20191013_20191018_01_T1_rgb652, ***do the same for LC08_L1TP_228070_20191003_20191018_01_T1_rgb652***;
 
-![](../pics/ba2.gif)
 
 **Setp 8: Draw burn_test and unburn_test samples for LC08_L1TP_220067_20191011_20191018_01_T1**
 - In ArcGIS or QGIS, open the open the rgb753 false color image of the LC08_L1TP_220067_20191011_20191018_01_T1_rgb753 scene in the /data/landsat8_preprocessed_imgs folder. Also, open the active fire points data you downloaded in Step 2. The burned areas have a ***dark red*** color in rgb753 image and should have fire points (hotspots) overlayed on it. When you draw ground truth samples, make sure you follow this criterion.
