@@ -31,6 +31,7 @@ arch_table = (
     ('arm', ('armv5',)),
     ('armv6', ('armv6l',)),
     ('armv7', ('armv7l',)),
+    ('ppc64', ('ppc64le',)),
     ('aarch32', ('aarch32',)),
     ('aarch64', ('aarch64', 'arm64'))
 )
@@ -123,6 +124,26 @@ def get_expired_days():
     return dlfunc()
 
 
+@dllmethod
+def clean_obj(obj, kind):
+    prototype = PYFUNCTYPE(c_int, py_object, c_int)
+    dlfunc = prototype(('clean_obj', _pytransform))
+    return dlfunc(obj, kind)
+
+
+def clean_str(*args):
+    tdict = {
+        'str': 0,
+        'bytearray': 1,
+        'unicode': 2
+    }
+    for obj in args:
+        k = tdict.get(type(obj).__name__)
+        if k is None:
+            raise RuntimeError('Can not clean object: %s' % obj)
+        clean_obj(obj, k)
+
+
 def get_hd_info(hdtype, size=256):
     if hdtype not in range(HT_DOMAIN + 1):
         raise RuntimeError('Invalid parameter hdtype: %s' % hdtype)
@@ -137,8 +158,21 @@ def show_hd_info():
     return _pytransform.show_hd_info()
 
 
+def assert_armored(*names):
+    prototype = PYFUNCTYPE(py_object, py_object)
+    dlfunc = prototype(('assert_armored', _pytransform))
+
+    def wrapper(func):
+        def wrap_execute(*args, **kwargs):
+            dlfunc(names)
+            return func(*args, **kwargs)
+        return wrap_execute
+    return wrapper
+
+
 def get_license_info():
     info = {
+        'ISSUER': None,
         'EXPIRED': None,
         'HARDDISK': None,
         'IFMAC': None,
@@ -148,6 +182,11 @@ def get_license_info():
         'CODE': None,
     }
     rcode = get_registration_code().decode()
+    if rcode.startswith('*VERSION:'):
+        index = rcode.find('\n')
+        info['ISSUER'] = rcode[9:index].split('.')[0].replace('-sn-1.txt', '')
+        rcode = rcode[index+1:]
+
     index = 0
     if rcode.startswith('*TIME:'):
         from time import ctime
@@ -156,8 +195,8 @@ def get_license_info():
         index += 1
 
     if rcode[index:].startswith('*FLAGS:'):
-        info['FLAGS'] = 1
         index += len('*FLAGS:') + 1
+        info['FLAGS'] = ord(rcode[index - 1])
 
     prev = None
     start = index
@@ -178,6 +217,10 @@ def get_license_info():
 
 def get_license_code():
     return get_license_info()['CODE']
+
+
+def get_user_data():
+    return get_license_info()['DATA']
 
 
 def _match_features(patterns, s):
@@ -260,7 +303,9 @@ def _load_library(path=None, is_runtime=0, platid=None, suffix=''):
     try:
         m = cdll.LoadLibrary(filename)
     except Exception as e:
-        raise PytransformError('Load %s failed:\n%s' % (filename, e))
+        if sys.flags.debug:
+            print('Load %s failed:\n%s' % (filename, e))
+        raise
 
     # Removed from v4.6.1
     # if plat == 'linux':
@@ -293,11 +338,8 @@ def pyarmor_init(path=None, is_runtime=0, platid=None, suffix=''):
 
 
 def pyarmor_runtime(path=None, suffix=''):
-    try:
-        pyarmor_init(path, is_runtime=1, suffix=suffix)
-        init_runtime()
-    except Exception as e:
-        raise PytransformError(e)
+    pyarmor_init(path, is_runtime=1, suffix=suffix)
+    init_runtime()
 
 # ----------------------------------------------------------
 # End of pytransform

@@ -4,22 +4,30 @@
 ########################################################################
 
 landsat8_params:
-    landsat8_zip_dir: /home/l44xu/SIP2/data/landsat8_raw_zip
+    landsat8_zip_dir: /home/l44xu/SIP/data/landsat8_raw_zip
     raw_landsat8_format: tar.gz
     to_unzip: False
     multilook_num: 1
     low_percentage_to_remove: 0.02
     high_percentage_to_remove: 0.02
+
+    value_cut_params:
+        to_calculate_cut_values: False
+        to_use_cut_values: True
+        min_value_cut: 5000
+        max_value_cut: 32458.0
+
     output_raw_img_dir: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/
+
 
 
 ########################################################################
 # Image data parameters
 ########################################################################
 raw_data_params:
-    raw_img_dir: /home/l44xu/SIP/data/landsat8_preprocessed_imgs
+    raw_img_dir: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/
     raw_img_type: tiff
-    is_geotiff: True #if True, the projection and geotransform information will be saved when preparing data
+    is_geotiff: True
     raw_id_str_range: #from 'start' to 'end' in the name of the raw image are the string that differenciate different scenes
         start: 10
         end: 34

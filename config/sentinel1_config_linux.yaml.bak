@@ -4,11 +4,19 @@
 ########################################################################
 
 sentinel1_params:
-    sentinel1_zip_dir: /home/l44xu/SIP/data/sentinel1_raw_zip/
-    to_unzip: True
-    multilook_num: 4
-    low_percentage_to_remove: 0.0001
-    high_percentage_to_remove: 0.0001
+    sentinel1_zip_dir: /home/l44xu/SIP/data/sentinel1_raw_zip
+    to_unzip: False
+
+    multilook_num: 1
+    low_percentage_to_remove: 0.001
+    high_percentage_to_remove: 0.001
+
+    value_cut_params:
+        to_calculate_cut_values: False
+        to_use_cut_values: False
+        min_value_cut: 10
+        max_value_cut: 1000
+
     output_raw_img_dir: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/
 
 
