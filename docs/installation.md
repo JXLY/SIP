@@ -25,7 +25,9 @@ conda install pytorch
 conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
 ```
 
-** Install the following packages**
+Install the following packages:
+
+```
 conda install pandas
 conda install -c anaconda pyqt
 conda install -c conda-forge/label/cf201901 gdal
