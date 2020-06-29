@@ -71,6 +71,14 @@ sentinel1_params:
 
     output_raw_img_dir: /home/l44xu/SIP/data/sentinel1_preprocessed_imgs/
 
+### (4) RADARSAT Constelation mission (RCM) RCM SLC 
+
+rcm_slc_cp_params:
+    raw_safe_dir: /home/l44xu/my_data/RCM/RCM1_OK1050595_PK1051816_1_3MCP24_20200219_123901_CH_CV_SLC/manifest.safe
+    multilook_num: 9
+    low_percentage_to_remove: 0.1
+    high_percentage_to_remove: 0.1
+    output_raw_img_dir: /home/l44xu/my_data/RCM/test_c11c22c12r
 
 
 ########################################################################
