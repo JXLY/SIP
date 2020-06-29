@@ -92,10 +92,10 @@
 - Go to step 9 in the above to start from there; 
 - Once all steps are finised, please compare the four classification maps (two train, two predict) achieved by ***rf*** with the four maps achieved by ***ss_res***;
 
-**Step 3: do the same for svm and knn classifiers**
+**Step 3: do the same for spectral_res, svm and knn classifiers**
 - go over step 1 and step 2, but replace rf with svm and knn;
 - compare the classification maps, train accuracy and val accuracy of all four methods (i.e., ss_res, knn, rf, svm);
-
+- the comparison between spectral_res and spatial-spectral res, i.e., ss_res, may highlight the role of spatial coherence; 
 
 ## Compare classifier performance using different number of training samples
 

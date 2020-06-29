@@ -13,7 +13,7 @@ conda create -n py38 python=3.8
 conda activate py38
 ```
 
-**Step 4: In linux, install the following packages:**
+**Step 4: In linux, install the pytorch using the following command:**
 
 ```
 conda install pytorch
@@ -25,7 +25,7 @@ conda install pytorch
 conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
 ```
 
-Install the following packages:
+Install the the other packages:
 
 ```
 conda install pandas
