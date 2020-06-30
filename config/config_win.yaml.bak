@@ -6,21 +6,21 @@
 
 Modis_params:
     
-    Modis_hdf_dir: C:\Users\l44xu\SIP\data\MCD12Q1_raw_hdf
+    Modis_hdf_dir: C:\Users\l44xu\SIP\data\MOD13Q1_raw_hdf
     raw_Modis_format: hdf
-    Modis_data_type: MCD12Q1 #MOD09QA MCD64A1
+    Modis_data_type: MOD13Q1 #MOD02QKM #MCD12Q1 #MOD09QA MCD64A1
 
     Modis_download_params:
         to_download_Modis: False
         Modis_token: F9F48016-B36C-11EA-A12E-AFAFCE286FFE
         #Modis_url: https:\\ladsweb.modaps.eosdis.nasa.gov\archive\orders\501457698\
         #Modis_url: https:\\ladsweb.modaps.eosdis.nasa.gov\archive\orders\501459585\
-        Modis_url: https:\\ladsweb.modaps.eosdis.nasa.gov\archive\orders\501459792\
-    
+        #Modis_url: https:\\ladsweb.modaps.eosdis.nasa.gov\archive\orders\501459792\
+        Modis_url: https:\\ladsweb.modaps.eosdis.nasa.gov\archive\orders\501461229\
     Modis_hdf_to_tiff: True
     multilook_num: 1
-    low_percentage_to_remove: 0.02
-    high_percentage_to_remove: 0.02
+    low_percentage_to_remove: 0.0
+    high_percentage_to_remove: 0.0
     value_cut_params:
         to_calculate_cut_values: False
         to_use_cut_values: False
@@ -28,17 +28,17 @@ Modis_params:
         max_value_cut: 0.795
 
     Modis_mosaic_params:
-        to_mosaic_Modis: True
+        to_mosaic_Modis: False
         Modis_merge_days: 1
 
-    output_raw_img_dir: C:\Users\l44xu\SIP\data\MCD12Q1_preprocessed_imgs\
+    output_raw_img_dir: C:\Users\l44xu\SIP\data\MOD13Q1_preprocessed_imgs\
 
 ### (2) Landsat 
 
 Landsat_params:
     Landsat_zip_dir: C:\Users\l44xu\SIP\data\landsat8_raw_zip
     raw_Landsat_format: tar.gz
-    Landsat_data_type: LT05_L1TP #LE07_L1TP LC08_L1TP
+    Landsat_data_type: LC08_L1TP #LT05_L1TP #LE07_L1TP LC08_L1TP
 
     to_unzip: True
     multilook_num: 1
@@ -48,10 +48,10 @@ Landsat_params:
     value_cut_params:
         to_calculate_cut_values: True
         to_use_cut_values: True
-        min_value_cut: 10
-        max_value_cut: 200.0
+        min_value_cut: 5000
+        max_value_cut: 40000
 
-    output_raw_img_dir: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs_land\
+    output_raw_img_dir: C:\Users\l44xu\SIP\data\landsat8_preprocessed_imgs_usa\
 
 ### (3) Sentinel-1
 
