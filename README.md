@@ -27,8 +27,8 @@ Intelligent pixel-level image classification using deep neural networks.
 
 # Documentation
 * [Installation](docs/installation.md)
-* [First example - sea ice classification](docs/first_example.md)
-* [Image preprocessing](docs/sentinel1_preprocessing.md)
+* [First example](docs/first_example.md)
+* [Data preprocessing](docs/data_preprocessing.md)
 * [Burned area detection from Landsat8 Images](docs/ba_landsat8.md)
 * [Config file](docs/config_file.md)
 * [FAQ](docs/qa.md)

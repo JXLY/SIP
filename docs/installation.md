@@ -13,13 +13,13 @@ conda create -n py38 python=3.8
 conda activate py38
 ```
 
-**Step 4: In linux, install the pytorch using the following command:**
+**Step 4: In linux, install the pytorch package using the following command:**
 
 ```
 conda install pytorch
 ``` 
 
-**However, in windows, use the following command:**
+**However, in windows, use the following command to install pytorch:**
 
 ```
 conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
@@ -37,7 +37,7 @@ conda install pyyaml
 conda install git
 ```
 
-**Step 5: Cd to your home folder, and run**
+**Step 5: go to your home folder, and run**
 
 ```
 cd you_home_folder

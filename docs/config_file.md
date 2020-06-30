@@ -4,23 +4,35 @@
 SIP supports the preprocessing of raw data to extract enhanced images and features as input to the classification algorithms. Parameters are illustrated using landsat8 as an example.  
 
 ```
-landsat8_params:
-    landsat8_zip_dir: /home/l44xu/SIP2/data/landsat8_raw_zip
-    raw_landsat8_format: tar.gz
-    to_unzip: False
+Landsat_params:
+    Landsat_zip_dir: /home/l44xu/SIP/data/landsat8_raw_zip
+    raw_Landsat_format: tar.gz
+    Landsat_data_type: LC08_L1TP #LT05_L1TP #LE07_L1TP LC08_L1TP
+
+    to_unzip: True
     multilook_num: 1
     low_percentage_to_remove: 0.02
     high_percentage_to_remove: 0.02
-    output_raw_img_dir: /home/l44xu/SIP/data/landsat8_preprocessed_imgs/
+
+    value_cut_params:
+        to_calculate_cut_values: True
+        to_use_cut_values: True
+        min_value_cut: 5000
+        max_value_cut: 40000
+
+    output_raw_img_dir: /home/l44xu/SIP/data/landsat8_preprocessed_imgs_usa/
 ```
+**1.1 Support different Landsat products**, including ***LC08_L1TP***, ***LE07_L1TP***, and ***LT05_L1TP***. You need to define ***Landsat_data_type*** using one of the above product names.  
 
-**1.1 Unzip the raw data.** If ***to_unzip*** is True, the raw data files with extension ***raw_landsat8_format*** in folder ***landsat8_zip_dir*** will be extracted into separate folders. 
+**1.2 Unzip the raw data.** If ***to_unzip*** is True, the raw data files with extension ***raw_landsat8_format*** in folder ***landsat8_zip_dir*** will be extracted into separate folders. 
 
-**1.2 Multilooking to reduce size.** To reduce image size, a image patch of size ***multilook_num*** by ***multilook_num*** will be averaged into a single pixel in the preprocessed images. 
+**1.3 Multilooking to reduce size.** To reduce image size, a image patch of size ***multilook_num*** by ***multilook_num*** will be averaged into a single pixel in the preprocessed images. 
 
-**1.3 Remove extrame pixels.** To increase image contrast for better visualization, low intensity pixels of percentage ***low_percentage_to_remove*** will be set to the value 0, and high intensity pixels of percentage ***high_percentage_to_remove*** will be set to the value 255. After this, the dynamic range of image will be extended. 
+**1.4 Remove extrame pixels.** To increase image contrast for better visualization, low intensity pixels of percentage ***low_percentage_to_remove*** will be set to the value 0, and high intensity pixels of percentage ***high_percentage_to_remove*** will be set to the value 255. After this, the dynamic range of image will be extended. 
 
-**1.4 Save preprocessed images.** The preprocessed images will be saved into folder ***output_raw_img_dir***.
+**1.5 Another way to remove extrame pixels*** is by using the ***min_value_cut*** and ***max_value_cut*** parameters. The percentage values calculated for different images will change from image to image, and may cause different images look very different after the enhancement. The cut values here ensure all scenes are enhanced according to the same ***ruler*** and thereby the same class in the image will still look similar after enhancement. To use the cut values instead of the percentage values, you need to set ***to_use_cut_values** to be True. And, instead of manually set the cut values, you can also let the algorithm to automatically calculate and fill these values for you by set ***to_calculate_cut_values*** to be True. 
+ 
+**1.6 Save preprocessed images.** The preprocessed images will be saved into folder ***output_raw_img_dir***.
  
 # 2. Preparing data 
 
