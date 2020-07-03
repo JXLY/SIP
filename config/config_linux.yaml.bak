@@ -17,7 +17,7 @@ Modis_params:
         #Modis_url: https://ladsweb.modaps.eosdis.nasa.gov/archive/orders/501459585/
         #Modis_url: https://ladsweb.modaps.eosdis.nasa.gov/archive/orders/501459792/
         Modis_url: https://ladsweb.modaps.eosdis.nasa.gov/archive/orders/501461229/
-    Modis_hdf_to_tiff: True
+    Modis_hdf_to_tiff: False
     multilook_num: 1
     low_percentage_to_remove: 0.0
     high_percentage_to_remove: 0.0
@@ -30,6 +30,13 @@ Modis_params:
     Modis_mosaic_params:
         to_mosaic_Modis: False
         Modis_merge_days: 1
+
+    Modis_reprojection_params:
+        to_reproject_Modis: True
+        Modis_reprojection_destination_wkt_file: /home/l44xu/SIP/data/wgs84_lambert_azimuthal_equal_area_wkt.txt
+        # if None, use default WGS_1984_Lambert_Azimuthal_Equal_Area
+        Modis_resampling_method: nearest_neighbor
+        
 
     output_raw_img_dir: /home/l44xu/SIP/data/MOD13Q1_preprocessed_imgs/
 
